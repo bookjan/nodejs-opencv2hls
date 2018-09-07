@@ -1,0 +1,33 @@
+{
+  "name": "nodejs-opencv2hls",
+  "version": "1.0.0",
+  "description": "Make a (HLS)HTTP Live Streaming from OpenCV by Node.js",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bookjan/nodejs-opencv2hls.git"
+  },
+  "keywords": [
+    "OpenCV",
+    "Node.js",
+    "FFmpeg",
+    "HLS"
+  ],
+  "author": "bookjan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bookjan/nodejs-opencv2hls/issues"
+  },
+  "homepage": "https://github.com/bookjan/nodejs-opencv2hls#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "ngrok": "^3.0.1",
+    "opencv4nodejs": "^4.7.4",
+    "pug": "^2.0.3"
+  }
+}

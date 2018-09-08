@@ -8,6 +8,9 @@ const { opencv } = require('./config');
 
 const classifier = new cv.CascadeClassifier(cv.HAAR_FRONTALFACE_ALT2);
 
+// set webcam interval
+const camInterval = Math.ceil(1000 / opencv.camFps);
+
 // set stdout encoding to 'binary'
 process.stdout.setDefaultEncoding('binary');
 
@@ -27,7 +30,7 @@ function detectFaces(img) {
   return classifier.detectMultiScaleGpu(img.bgrToGray(), options).objects;
 }
 
-const runWebcamFaceDetection = (src, detectFaces) => grabFrames(src, 1, opencv.camInterval, (frame) => {
+const runWebcamFaceDetection = (src, detectFaces) => grabFrames(src, 1, camInterval, (frame) => {
   const frameResized = frame.resizeToMax(opencv.frameSize);
 
   // detect faces

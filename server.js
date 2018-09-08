@@ -8,6 +8,9 @@ const httpPort = 8080;
 
 const app = express();
 
+// Store project base path
+global.__basedir = __dirname;
+
 app.set('port', httpPort);
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -35,5 +38,8 @@ server.listen(app.get('port'), '0.0.0.0', function () {
   ngrokURL = await ngrok.connect(app.get('port'));
   console.log('ngrokURL', ngrokURL);
 })();
+
+// Start generate HTTP Live Streaming
+require(`${__basedir}/utils/hls`)();
 
 module.exports.app = app;

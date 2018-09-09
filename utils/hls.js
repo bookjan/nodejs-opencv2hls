@@ -2,14 +2,17 @@ const spawn = require('child_process').spawn;
 
 const hlsArgs = [
   '-f', 'image2pipe',
+  '-re',
+  '-framerate', '15',
   '-i', '-',
-  '-hls_time', '1',
-  '-hls_list_size', '5',
+  '-codec:v', 'libx264',
+  '-g', '30',
+  '-hls_time', '4',
+  '-hls_list_size', '3',
   '-hls_flags', 'delete_segments',
   '-use_localtime', '1',
-  '-hls_segment_filename',
-  `${__basedir}/public/%Y%m%d-%s.ts`,
-  `${__basedir}/public/playlist.m3u8`
+  '-hls_segment_filename', `${__basedir}/public/hls/%Y%m%d-%s.ts`,
+  `${__basedir}/public/hls/playlist.m3u8`
 ];
 
 const ffmpegHLS = spawn('ffmpeg', hlsArgs);
@@ -34,6 +37,18 @@ const hls = () => {
   });
 
   faceDetect.on('exit', function (code) {
+    console.log('child process exited with code ' + code.toString());
+  });
+
+  ffmpegHLS.stdout.on('data', function (data) {
+    console.log('stdout: ' + data.toString());
+  });
+
+  ffmpegHLS.stderr.on('data', function (data) {
+    console.log('stderr: ' + data.toString());
+  });
+
+  ffmpegHLS.on('exit', function (code) {
     console.log('child process exited with code ' + code.toString());
   });
 }

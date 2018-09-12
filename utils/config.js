@@ -5,7 +5,15 @@ exports.opencv = {
   // set webcam port 
   camPort: 0,
   // set webcam FPS
-  camFps: 100,
+  camFps: 200,
   // set frame size
-  frameSize: 800
+  frameSize: 640
+}
+
+/**
+ * Here to set process configs
+ */
+exports.process = {
+  // set process count
+  maxCount: 1
 }

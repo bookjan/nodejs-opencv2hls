@@ -1,44 +1,43 @@
 const spawn = require('child_process').spawn;
+const filter = require('stream-filter');
+const MultiStream = require('multistream');
+
+const { process } = require('./config');
 
 const hlsArgs = [
   '-f', 'image2pipe',
-  '-re',
-  '-framerate', '15',
+  '-framerate', '25',
   '-i', '-',
-  '-codec:v', 'libx264',
+  '-c:v', 'libx264',
+  '-preset', 'faster',
   '-g', '30',
+  '-r', '25',
   '-hls_time', '4',
-  '-hls_list_size', '3',
+  '-hls_list_size', '5',
   '-hls_flags', 'delete_segments',
   '-use_localtime', '1',
   '-hls_segment_filename', `${__basedir}/public/hls/%Y%m%d-%s.ts`,
   `${__basedir}/public/hls/playlist.m3u8`
 ];
 
-const ffmpegHLS = spawn('ffmpeg', hlsArgs);
-const faceDetect = spawn('node', [`${__basedir}/utils/face-detection.js`]);
+const faceDetectStreams = [];
 
-faceDetect.stdout.setDefaultEncoding('binary');
+const ffmpegHLS = spawn('ffmpeg', hlsArgs);
 ffmpegHLS.stdin.setEncoding('binary');
 
-// filter opencv output, example: '[ INFO:0] Initialize OpenCL runtime...'
-const regex = /\[\sINFO\:\d\]\s/gm;
+for (count = 1; count <= process.maxCount; count++) {
+  const faceDetect = spawn('node', [`${__basedir}/utils/face-detection.js`]);
+  faceDetect.stdout.setDefaultEncoding('binary');
+  faceDetectStreams.push(faceDetect.stdout);
+}
 
 const hls = () => {
-  faceDetect.stdout.on('data', function (data) {
+  MultiStream(faceDetectStreams).pipe(filter(function (data) {
+    // filter opencv output, example: '[ INFO:0] Initialize OpenCL runtime...'
+    const regex = /\[\sINFO\:\d\]\s/gm;
     const isImgData = !regex.test(data);
-    if (isImgData) {
-      ffmpegHLS.stdin.write(data);
-    }
-  });
-
-  faceDetect.stderr.on('data', function (data) {
-    console.log('stderr: ' + data.toString());
-  });
-
-  faceDetect.on('exit', function (code) {
-    console.log('child process exited with code ' + code.toString());
-  });
+    return isImgData;
+  })).pipe(ffmpegHLS.stdin);
 
   ffmpegHLS.stdout.on('data', function (data) {
     console.log('stdout: ' + data.toString());

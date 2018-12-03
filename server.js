@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const path = require('path');
 const ngrok = require('ngrok');
 
+const { opencv } = require('./utils/config');
+
 const httpPort = 8080;
 
 const app = express();
@@ -24,7 +26,7 @@ let ngrokURL = `http://localhost:${app.get('port')}`;
 
 // Render index.html and interpolate the url constiable
 app.get('/', (req, res) => {
-	res.render('index', { title: 'Face Detection', url: ngrokURL });
+	res.render('index', { title: 'HLS - Face Detection', url: ngrokURL, width: opencv.frameSize});
 });
 
 // HTTP server

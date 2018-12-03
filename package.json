@@ -31,5 +31,8 @@
     "opencv4nodejs": "^4.7.4",
     "pug": "^2.0.3",
     "stream-filter": "^2.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0"
   }
 }

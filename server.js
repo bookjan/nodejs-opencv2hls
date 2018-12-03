@@ -23,23 +23,24 @@ app.set('view engine', 'pug');
 let ngrokURL = `http://localhost:${app.get('port')}`;
 
 // Render index.html and interpolate the url constiable
-app.get('/', function (req, res) {
-  res.render('index', { title: 'Face Detection', url: ngrokURL });
+app.get('/', (req, res) => {
+	res.render('index', { title: 'Face Detection', url: ngrokURL });
 });
 
 // HTTP server
 const server = http.createServer(app);
-server.listen(app.get('port'), '0.0.0.0', function () {
-  console.log('HTTP server listening on port ' + app.get('port'));
+server.listen(app.get('port'), '0.0.0.0', () => {
+	console.log('HTTP server listening on port ' + app.get('port'));
 });
 
-// Get ngrok url 
-(async function () { // IIFE: Immediately Invoked Function Expression
-  ngrokURL = await ngrok.connect(app.get('port'));
-  console.log("Ngrok HTTP URL:", ngrokURL);
+// Get ngrok url
+(async () => {
+	// IIFE: Immediately Invoked Function Expression
+	ngrokURL = await ngrok.connect(app.get('port'));
+	console.log('Ngrok HTTP URL:', ngrokURL);
 })();
 
 // Start generate HTTP Live Streaming
-require(`${__basedir}/utils/hls`)();
+require('./utils/hls')();
 
 module.exports.app = app;

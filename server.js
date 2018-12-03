@@ -36,7 +36,7 @@ server.listen(app.get('port'), '0.0.0.0', function () {
 // Get ngrok url 
 (async function () { // IIFE: Immediately Invoked Function Expression
   ngrokURL = await ngrok.connect(app.get('port'));
-  console.log('ngrokURL', ngrokURL);
+  console.log("Ngrok HTTP URL:", ngrokURL);
 })();
 
 // Start generate HTTP Live Streaming
